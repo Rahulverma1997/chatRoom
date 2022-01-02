@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>ChatRoom</title>
+  </head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">ChatAPP</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>  MENU
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto ">
+              {% if current_user.is_authenticated %}
+              <li class="navbar nav-item">
+                <a class="nav-link" aria-current="page" href="#">{{ current_user.firstname }}</a>
+              </li>
+              <li class="navbar nav-item">
+                <a class="nav-link" aria-current="page" href="{{url_for('auth_obj.logout')}}">Logout</a>
+              </li>
+              {% else %}
+              <li class="navbar-nav nav-item">
+                <a class="nav-link active" aria-current="page" href="{{url_for('auth_obj.register')}}">Register</a>
+              </li>
+  
+              <li class="navbar-nav nav-item">
+                <a class="nav-link active" aria-current="page" href="{{url_for('auth_obj.login')}}">LogIn</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main>
+      {% if current_user.is_authenticated %}
+      <div class="container-fluid bg-primary max-height: 100%">
+        
+      </div>
+      {% endif %}
+
+      <div class="card text-center">
+        <div class="card-header">
+          Welcome
+        </div>
+        <div class="card-body">
+          {% if current_user.is_authenticated %}
+          <h5 class="card-title">{{ current_user.firstname }}</h5>
+          <p class="card-text">this is chat room application</p>
+          <a href="{{url_for('chat')}}" class="btn btn-primary">Click here to join Room</a>
+          {% else %}
+          <h5 class="card-title">Sign in</h5>
+          <p class="card-text">this is chat room application</p>
+          <a href="{{url_for('auth_obj.login')}}" class="btn btn-primary">Click here to sign IN</a>
+          {% endif %}
+          
+        </div>
+        <div class="card-footer text-muted">
+          Happy to see you
+        </div>
+      </div>
+      <div class="mx-auto" style="width: 18rem;">
+        <img src="{{url_for('static', filename = 'img/image1.jpg')}}" class="card-img-top" alt="...">
+        <div class="card-body text-center" >
+          {% if current_user.is_authenticated %}
+          <h5 class="card-title">Click below to Signout</h5>
+        
+          <a href="{{url_for('auth_obj.logout')}}" class="btn btn-primary">Sign Out</a>
+          {% else %}
+          <h5 class="card-title">Don't have an Account</h5>
+          <p class="card-text">Click on Sign Up to create One</p>
+          <a href="{{url_for('auth_obj.register')}}" class="btn btn-primary">Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+    
+      <div class="fixed-bottom bg-success text-center">@copyright, Rahul Verma</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
+</body>
+</html>

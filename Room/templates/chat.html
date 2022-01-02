@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>ChatRoom</title>
+  </head>
+<body class="bg-secondary">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">ChatAPP</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>  MENU
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto ">
+              {% if current_user.is_authenticated %}
+              <li class="navbar nav-item">
+                <a class="nav-link" aria-current="page" href="#">{{ current_user.firstname }}</a>
+              </li>
+              <li class="navbar nav-item">
+                <a class="nav-link" aria-current="page" href="{{url_for('auth_obj.logout')}}">Logout</a>
+              </li>
+              {% else %}
+              <li class="navbar-nav nav-item">
+                <a class="nav-link active" aria-current="page" href="{{url_for('auth_obj.register')}}">Register</a>
+              </li>
+  
+              <li class="navbar-nav nav-item">
+                <a class="nav-link active" aria-current="page" href="{{url_for('auth_obj.login')}}">LogIn</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+     
+    <main class="container-fluid bg-secondary">
+
+        <div>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+
+      <div class="card text-center">
+        <div class="card-header">
+          Welcome
+        </div>
+      </div>
+
+      <div class="w-100" >
+        <div class="card-body" >
+            <div class="alert alert-primary" role="alert" id = "exp"></div>
+                  
+        </div>
+      </div>
+
+      
+
+      <div>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+      </div>
+
+    </main>
+    
+    <div class="fixed-bottom card-body text-center">
+        <form class="card-body alert-dismissible w-100" id="message_input_form">
+            <input class="form-control" type="text" id="message_input" placeholder="Enter your message here">
+            <br>
+            <button class="form-control w-auto" type="submit">Send</button>
+        </form>  
+        @copyright, Rahul Verma</div>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        const socket = io.connect("");
+        socket.on('connect', function() {
+            socket.emit('join_room', {
+                name: "{{ name }}",
+                room: "{{ room }}"
+            }); 
+
+            let message_input = document.getElementById('message_input');
+
+            document.getElementById('message_input_form').onsubmit = function (e) {
+                e.preventDefault();
+                
+                let message = message_input.value.trim();
+                
+                if (message.length) {
+                    socket.emit('send_message', {
+                        username: "{{ name }}",
+                        message: message
+                    })
+                }
+                message_input.value = '';
+                message_input.focus();
+            }
+        });
+
+        socket.on('join_room_announcement', function(data){
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `<b>${data.name}</b> has joined the room`;
+            document.getElementById("exp").appendChild(newNode);
+        } );
+
+        socket.on('receive_message', function (data) {
+            console.log(data.username);
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `<b>${data.username}:&nbsp;</b> ${data.message}`;
+              
+            document.getElementById("exp").appendChild(newNode);
+        });
+
+        window.addEventListener("beforeunload", function () {
+            socket.emit('leave_room', {
+                name : "{{ name }}",
+                room: "{{ room }}"
+            });
+        });
+
+        socket.on('leave_room_announcement', function(data){
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `<b>${data.name}</b> has left the room`;
+            document.getElementById("exp").appendChild(newNode);
+        } );
+
+    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
+</body>
+</html>
